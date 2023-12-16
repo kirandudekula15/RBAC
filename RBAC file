@@ -34,3 +34,14 @@ spec:
   containers:
   - name: nginx
     image: nginx
+
+kubectl create namespace dev
+sudo openssl genrsa -out emp.key 2048
+sudo openssl req -new -key emp.key -out emp.csr -subj "/CN=emp/O=dev"
+ls | grep emp
+sudo openssl x509 -req -CA ~/.minikube/ca.crt -CAkey  ~/.minikube/ca.key -CAcreateserial -days 365 -in emp.csr -out emp.crt
+kubectl config set-credentials emp --client-certificate=emp.crt --client-key=emp.key
+kubectl config set-context emp-minikube --cluster=minikube --user=emp --namespace=dev
+kubectl config get-contexts
+kubectl config use-context emp-minikube
+
